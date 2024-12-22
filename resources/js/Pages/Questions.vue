@@ -2,7 +2,7 @@
     import Layout from '@/Shared/Layout.vue';
     import NewQuestionModel from '@/Shared/NewQuestionModel.vue';
     import { ref } from 'vue';
-
+    import { router } from '@inertiajs/vue3';
 
     let showNewQuestionModal = ref(false);
     const createdQuestion = ref(null);
@@ -38,6 +38,49 @@
             }
         })
     }
+    // VALIDATE ANSWERS
+    const validateAnswer = ()=>{
+        for(const answer of newAnswers.value){
+            if(answer.answer.trim()===''){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // COUNT ANSWERS
+    const answerCount = ()=>{
+        if(newAnswers.length<4){
+            alert('Four answers are required to submit!')
+        }else if(newAnswers.length===4){
+            return true;
+        }
+        return false;
+    }
+
+    // SUBMIT QUESTION
+    const submitQuestion = ()=>{
+        if(!createdQuestion.value || createdQuestion.value==" "){
+            alert("Question cannot be empty");
+            return false;
+        }
+
+        if (!validateAnswer() && !answerCount()){
+            alert("Fill all the inputs")
+            return false;
+        }
+
+        console.log("Question ", createdQuestion.value);
+        console.log("Answers ", newAnswers.value);
+
+        router.post('/questions', {
+            question: createdQuestion.value,
+            answers: newAnswers.value
+        })
+    }
+
+    
+
 </script>
 <template>
     <Layout>
@@ -70,7 +113,7 @@
                     <form>
                         <div class="mb-3">
                             <label for="question" class="form-label">Question</label>
-                            <input type="text" v-model="createdQuestion"class="form-control" id="question" aria-describedby="questionHelp">
+                            <input type="text" v-model="createdQuestion"class="form-control" id="question" aria-describedby="questionHelp" required>
                         </div>
                         <table class="table">
                             <thead>
@@ -83,7 +126,7 @@
                             <tbody>
                                 <tr v-for="(answer, index) in newAnswers">
                                     <th scope="row">{{ answer.id }}</th>
-                                    <td><input v-model="answer.answer" type="text" class="form-control" id="question" aria-describedby="questionHelp"></td>
+                                    <td><input v-model="answer.answer" type="text" class="form-control" id="answer" aria-describedby="questionHelp" required></td>
                                     <td><input :checked="answer.correct_answer===1" :value="answer.id" @change="handleRadioToggle(answer.id)" type="radio" class="form-check-input"  id="correct"></td>
                                 </tr>
                             </tbody>
@@ -93,7 +136,7 @@
                 <template #footer>
                     <span v-if="newAnswers.length<4" class="btn btn-light mx-1" @click="addNewAnswer"><b>+</b></span>
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
-                    <button v-if="newAnswers.length>3" class="btn btn-success mx-1">Submit</button>
+                    <button v-if="newAnswers.length>3" class="btn btn-success mx-1" @click="submitQuestion">Submit</button>
                 </template>
             </NewQuestionModel>
         </Teleport>

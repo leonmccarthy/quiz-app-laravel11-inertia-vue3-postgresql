@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/questions', [QuestionController::class, 'index']);
+Route::post('/questions', [QuestionController::class, 'store']);
