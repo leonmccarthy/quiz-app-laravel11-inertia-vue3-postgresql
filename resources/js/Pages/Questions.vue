@@ -5,6 +5,10 @@
 
 
     let showNewQuestionModal = ref(false);
+    const createdQuestion = ref(null);
+    const newAnswers = ref([]);
+    const selectedAnswer = ref(null);
+    let answerId  = 1;
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -14,8 +18,26 @@
         showNewQuestionModal.value=false;
     };
 
-    const createdQuestion = ref(null);
+    const addNewAnswer = ()=>{
+        const newAnswer = {
+            id: answerId++,
+            answer: '',
+            correct_answer: 0
+        }
+        newAnswers.value.push(newAnswer);
+    };
 
+    // HANDLING SELECTING CORRECT ANSWER
+    const handleRadioToggle = (id)=>{
+        selectedAnswer.value = id;
+        newAnswers.value.forEach(answer=>{
+            if(answer.id === id){
+                answer.correct_answer = 1;
+            }else{
+                answer.correct_answer = 0;
+            }
+        })
+    }
 </script>
 <template>
     <Layout>
@@ -47,7 +69,7 @@
                 <template #body>
                     <form>
                         <div class="mb-3">
-                            <label for="question" class="form-label">Email address</label>
+                            <label for="question" class="form-label">Question</label>
                             <input type="text" v-model="createdQuestion"class="form-control" id="question" aria-describedby="questionHelp">
                         </div>
                         <table class="table">
@@ -59,19 +81,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td><input type="text" class="form-control" id="question" aria-describedby="questionHelp"></td>
-                                    <td><input type="radio" class="form-check-input"  id="correct"></td>
+                                <tr v-for="(answer, index) in newAnswers">
+                                    <th scope="row">{{ answer.id }}</th>
+                                    <td><input v-model="answer.answer" type="text" class="form-control" id="question" aria-describedby="questionHelp"></td>
+                                    <td><input :checked="answer.correct_answer===1" :value="answer.id" @change="handleRadioToggle(answer.id)" type="radio" class="form-check-input"  id="correct"></td>
                                 </tr>
                             </tbody>
                         </table>
                         </form>
                 </template>
                 <template #footer>
-                    <span class="mx-1"><h3>+</h3></span>
+                    <span v-if="newAnswers.length<4" class="btn btn-light mx-1" @click="addNewAnswer"><b>+</b></span>
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
-                    <button class="btn btn-success mx-1">Submit</button>
+                    <button v-if="newAnswers.length>3" class="btn btn-success mx-1">Submit</button>
                 </template>
             </NewQuestionModel>
         </Teleport>
