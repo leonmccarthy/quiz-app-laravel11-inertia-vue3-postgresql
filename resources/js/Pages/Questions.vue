@@ -74,12 +74,16 @@
             return false;
         }
 
-        console.log("Question ", createdQuestion.value);
-        console.log("Answers ", newAnswers.value);
-
+        // SEND CREATE QUESTION DATA TO BACKEND 
         router.post('/questions', {
             question: createdQuestion.value,
             answers: newAnswers.value
+        })
+
+        // IF EVERYTHING IS SUCCESSFUL
+        router.on('success',()=>{
+            createdQuestion.value = null;
+            newAnswers.value = []
         })
     }
 
@@ -114,8 +118,9 @@
                     <h5>Add New Question</h5>
                 </template>
                 <template #success>
-                    <div v-if="success" class="alert alert-success">
+                    <div v-if="success" class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </template>
                 <template #body>
