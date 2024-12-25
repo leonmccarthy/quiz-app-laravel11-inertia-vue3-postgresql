@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,7 +32,26 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
         //
-        return $request->all();
+        $request_data = $request->all();
+        $question = $request_data['question'];
+
+        // SAVE QUESTION
+        $newQuestion = new Question();
+        $newQuestion->question = $question;
+        $newQuestion->save();
+
+        // SAVE ANSWERS
+        $answers = $request_data['answers'];
+
+        foreach ($answers as $answer) {
+            $newAnswer = new Answer();
+            $newAnswer->answers = $answer['answer'];
+            $newAnswer->question_id = $newQuestion->id;
+            $newAnswer->correct_answer = $answer['correct_answer'];
+            $newAnswer->save();
+        }
+
+        return redirect('/questions')->with('success', 'Question and Answer created successfully!');
     }
 
     /**

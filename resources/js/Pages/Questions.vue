@@ -3,12 +3,16 @@
     import NewQuestionModel from '@/Shared/NewQuestionModel.vue';
     import { ref } from 'vue';
     import { router } from '@inertiajs/vue3';
+    import { usePage } from '@inertiajs/vue3';
+    import { computed } from 'vue';
 
     let showNewQuestionModal = ref(false);
     const createdQuestion = ref(null);
     const newAnswers = ref([]);
     const selectedAnswer = ref(null);
     let answerId  = 1;
+    const page = usePage();
+    const success = computed(()=>page.props.flash.success);
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -108,6 +112,11 @@
             <NewQuestionModel :show="showNewQuestionModal" @close="destroyModal">
                 <template #header>
                     <h5>Add New Question</h5>
+                </template>
+                <template #success>
+                    <div v-if="success" class="alert alert-success">
+                        {{ success }}
+                    </div>
                 </template>
                 <template #body>
                     <form>

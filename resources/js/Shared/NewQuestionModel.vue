@@ -13,6 +13,8 @@ const props = defineProps({
         </div>
 
         <div class="modal-body">
+          <slot name="success"></slot>
+
           <slot name="body">default body</slot>
         </div>
 
