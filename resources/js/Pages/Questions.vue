@@ -12,6 +12,8 @@
     const page = usePage();
     const success = computed(()=>page.props.flash.success);
     let showViewQuestionModal = ref(false);
+    const selectedQuestion = ref(null);
+    const answers = ref([])
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -19,6 +21,7 @@
 
     const destroyModal = ()=>{
         showNewQuestionModal.value=false;
+        showViewQuestionModal.value=false;
     };
 
     const addNewAnswer = ()=>{
@@ -94,7 +97,8 @@
 
     const viewQuestion = (index)=>{
         showViewQuestionModal.value = true;
-        alert(index);
+        selectedQuestion.value = props.questions[index].question;
+        answers.value = props.questions[index].answers;
     };
 
 </script>
@@ -123,6 +127,9 @@
         </table>
 
         <Teleport to="body">
+
+            <!-- CREATE QUESTION AND ANSWERS MODAL -->
+
             <QuestionModal :show="showNewQuestionModal" @close="destroyModal">
                 <template #header>
                     <h5>Add New Question</h5>
@@ -161,6 +168,34 @@
                     <span v-if="newAnswers.length<4" class="btn btn-light mx-1" @click="addNewAnswer"><b>+</b></span>
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
                     <button v-if="newAnswers.length>3" class="btn btn-success mx-1" @click="submitQuestion">Submit</button>
+                </template>
+            </QuestionModal>
+
+            <QuestionModal :show="showViewQuestionModal" @close="destroyModal">
+                <template #header>
+                    <h5>View Question/Answers</h5>
+                </template>
+                <template #body>
+                    <p><strong>Q. {{ selectedQuestion }}</strong></p>
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Answers</th>
+                                    <th scope="col">Correct ?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(answer, index) in answers">
+                                    <th scope="row">{{ index + 1 }}</th>
+                                    <td><input v-model="answer.answers" type="text" class="form-control" id="answer" aria-describedby="answerHelp"  required></td>
+                                    <td><input :checked="answer.correct_answer===true" :value="answer.id" @change="handleRadioToggle(answer.id)" type="radio" class="form-check-input"  id="correct"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </template>
+                <template #footer>
+                    <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
                 </template>
             </QuestionModal>
         </Teleport>
