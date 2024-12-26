@@ -14,8 +14,11 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        //PASS IN WHAT IS TO BE SHOWN
-        return Inertia::render('Questions');
+        //PASS IN QUESTIONS TO FRONTEND
+        $questions = Question::with('answers')->get();
+        return Inertia::render('Questions', [
+            'questions'=>$questions
+        ]);
     }
 
     /**

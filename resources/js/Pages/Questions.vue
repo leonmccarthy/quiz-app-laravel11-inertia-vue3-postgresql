@@ -1,11 +1,9 @@
 <script setup>
     import Layout from '@/Shared/Layout.vue';
     import NewQuestionModel from '@/Shared/NewQuestionModel.vue';
-    import { ref } from 'vue';
-    import { router } from '@inertiajs/vue3';
-    import { usePage } from '@inertiajs/vue3';
-    import { computed } from 'vue';
-
+    import { ref , computed } from 'vue';
+    import { router , usePage } from '@inertiajs/vue3';
+        
     let showNewQuestionModal = ref(false);
     const createdQuestion = ref(null);
     const newAnswers = ref([]);
@@ -87,7 +85,10 @@
         })
     }
 
-    
+    const props = defineProps({
+        questions: Object,
+        errors: Object
+    })
 
 </script>
 <template>
@@ -97,17 +98,19 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Question</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
+                <tr v-for="(question, index) in questions">
+                    <th scope="row">{{ index + 1 }}</th>
+                    <td>{{ question.question }}</td>
+                    <td>
+                        <button class="btn btn-outline-success mx-1">View</button>
+                        <button class="btn btn-outline-primary mx-1">Edit</button>
+                        <button class="btn btn-outline-danger mx-1">Delete</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
