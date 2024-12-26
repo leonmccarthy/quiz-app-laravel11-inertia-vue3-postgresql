@@ -1,6 +1,6 @@
 <script setup>
     import Layout from '@/Shared/Layout.vue';
-    import NewQuestionModel from '@/Shared/NewQuestionModel.vue';
+    import QuestionModal from '@/Shared/QuestionModal.vue';
     import { ref , computed } from 'vue';
     import { router , usePage } from '@inertiajs/vue3';
         
@@ -11,6 +11,7 @@
     let answerId  = 1;
     const page = usePage();
     const success = computed(()=>page.props.flash.success);
+    let showViewQuestionModal = ref(false);
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -85,10 +86,16 @@
         })
     }
 
+    // ASSIGN PROPS TO FRONTEND FROM BACKEND
     const props = defineProps({
         questions: Object,
         errors: Object
-    })
+    });
+
+    const viewQuestion = (index)=>{
+        showViewQuestionModal.value = true;
+        alert(index);
+    };
 
 </script>
 <template>
@@ -107,7 +114,7 @@
                     <th scope="row">{{ index + 1 }}</th>
                     <td>{{ question.question }}</td>
                     <td>
-                        <button class="btn btn-outline-success mx-1">View</button>
+                        <button class="btn btn-outline-success mx-1" @click="viewQuestion(index)">View</button>
                         <button class="btn btn-outline-primary mx-1">Edit</button>
                         <button class="btn btn-outline-danger mx-1">Delete</button>
                     </td>
@@ -116,7 +123,7 @@
         </table>
 
         <Teleport to="body">
-            <NewQuestionModel :show="showNewQuestionModal" @close="destroyModal">
+            <QuestionModal :show="showNewQuestionModal" @close="destroyModal">
                 <template #header>
                     <h5>Add New Question</h5>
                 </template>
@@ -155,7 +162,7 @@
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
                     <button v-if="newAnswers.length>3" class="btn btn-success mx-1" @click="submitQuestion">Submit</button>
                 </template>
-            </NewQuestionModel>
+            </QuestionModal>
         </Teleport>
     </Layout>
 </template>
