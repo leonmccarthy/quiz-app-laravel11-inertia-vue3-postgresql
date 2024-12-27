@@ -13,7 +13,8 @@
     const success = computed(()=>page.props.flash.success);
     let showViewQuestionModal = ref(false);
     const selectedQuestion = ref(null);
-    const answers = ref([])
+    const answers = ref([]);
+    const selectedEditAnswer = ref(null);
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -101,6 +102,19 @@
         answers.value = props.questions[index].answers;
     };
 
+    // HANDLE RADIO CHANGE AND SUBMIT EDITED ANSWERS
+    const handleRadioChange = (id)=>{
+        selectedEditAnswer.value = id;
+
+        answers.value.forEach((answer)=>{
+            if(answer.id===id){
+                answer.correct_answer = true;
+            }else{
+                answer.correct_answer = false;
+            }
+        })
+    }
+
 </script>
 <template>
     <Layout>
@@ -171,6 +185,8 @@
                 </template>
             </QuestionModal>
 
+            <!-- VIEW QUESTIONS AND EDIT ANSWERS -->
+
             <QuestionModal :show="showViewQuestionModal" @close="destroyModal">
                 <template #header>
                     <h5>View Question/Answers</h5>
@@ -189,13 +205,14 @@
                                 <tr v-for="(answer, index) in answers">
                                     <th scope="row">{{ index + 1 }}</th>
                                     <td><input v-model="answer.answers" type="text" class="form-control" id="answer" aria-describedby="answerHelp"  required></td>
-                                    <td><input :checked="answer.correct_answer===true" :value="answer.id" @change="handleRadioToggle(answer.id)" type="radio" class="form-check-input"  id="correct"></td>
+                                    <td><input :checked="answer.correct_answer===true" :value="answer.id" @change="handleRadioChange(answer.id)" type="radio" class="form-check-input"  id="correct"></td>
                                 </tr>
                             </tbody>
                         </table>
                 </template>
                 <template #footer>
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
+                    <button v-if="answers.length>3" class="btn btn-success mx-1" @click="submitQuestion">Save</button>
                 </template>
             </QuestionModal>
         </Teleport>
