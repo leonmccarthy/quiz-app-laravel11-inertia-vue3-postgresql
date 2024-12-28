@@ -102,7 +102,7 @@
         answers.value = props.questions[index].answers;
     };
 
-    // HANDLE RADIO CHANGE AND SUBMIT EDITED ANSWERS
+    // HANDLE RADIO CHANGE
     const handleRadioChange = (id)=>{
         selectedEditAnswer.value = id;
 
@@ -113,6 +113,11 @@
                 answer.correct_answer = false;
             }
         })
+    }
+
+    // SAVE UPDATED ANSWERS TO DATABASE
+    const updateAnswers = ()=>{
+        router.put('/answers', answers.value)
     }
 
 </script>
@@ -191,6 +196,12 @@
                 <template #header>
                     <h5>View Question/Answers</h5>
                 </template>
+                <template #success>
+                    <div v-if="success" class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </template>
                 <template #body>
                     <p><strong>Q. {{ selectedQuestion }}</strong></p>
                     <table class="table">
@@ -212,7 +223,7 @@
                 </template>
                 <template #footer>
                     <button class="btn btn-danger mx-1" @click="destroyModal">Close</button>
-                    <button v-if="answers.length>3" class="btn btn-success mx-1" @click="submitQuestion">Save</button>
+                    <button v-if="answers.length>3" class="btn btn-success mx-1" @click="updateAnswers">Update</button>
                 </template>
             </QuestionModal>
         </Teleport>
