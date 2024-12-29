@@ -119,19 +119,28 @@
 
     // SAVE UPDATED ANSWERS TO DATABASE
     const updateAnswers = ()=>{
-        router.put('/answers', answers.value)
-    }
+        router.put('/answers', answers.value);
+    };
 
     // EDIT QUESTION
     const editQuestion = (index)=>{
-        questionForEdit.value = props.questions[index]
+        questionForEdit.value = props.questions[index];
         // alert(index)
-    }
+    };
 
     // UPDATE QUESTION TO DATABASE
     const updateQuestion = ()=>{
-        router.put('/question', questionForEdit.value)
-    }
+        router.put('/question', questionForEdit.value);
+    };
+
+    // DELETE QUESTION
+    const deleteQuestion = (id) =>{
+        router.on('before', ()=>{
+            return confirm('Are you sure you want to delete?');
+        });
+
+        router.delete('/questions/'+id);
+    };
 
 </script>
 <template>
@@ -152,7 +161,7 @@
                     <td>
                         <button class="btn btn-outline-success mx-1" @click="viewQuestion(index)">View</button>
                         <button class="btn btn-outline-primary mx-1" @click="showEditQuestionModal=true, editQuestion(index)">Edit</button>
-                        <button class="btn btn-outline-danger mx-1">Delete</button>
+                        <button class="btn btn-outline-danger mx-1" @click="deleteQuestion(question.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
