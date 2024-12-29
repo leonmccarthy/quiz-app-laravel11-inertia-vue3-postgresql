@@ -15,6 +15,8 @@
     const selectedQuestion = ref(null);
     const answers = ref([]);
     const selectedEditAnswer = ref(null);
+    let showEditQuestionModal = ref(false);
+    const questionForEdit = ref(null);
 
     const createQuestion = ()=>{
         showNewQuestionModal.value=true;
@@ -120,6 +122,17 @@
         router.put('/answers', answers.value)
     }
 
+    // EDIT QUESTION
+    const editQuestion = (index)=>{
+        questionForEdit.value = props.questions[index]
+        // alert(index)
+    }
+
+    // UPDATE QUESTION TO DATABASE
+    const updateQuestion = ()=>{
+        router.put('/question', questionForEdit.value)
+    }
+
 </script>
 <template>
     <Layout>
@@ -138,7 +151,7 @@
                     <td>{{ question.question }}</td>
                     <td>
                         <button class="btn btn-outline-success mx-1" @click="viewQuestion(index)">View</button>
-                        <button class="btn btn-outline-primary mx-1">Edit</button>
+                        <button class="btn btn-outline-primary mx-1" @click="showEditQuestionModal=true, editQuestion(index)">Edit</button>
                         <button class="btn btn-outline-danger mx-1">Delete</button>
                     </td>
                 </tr>
@@ -226,6 +239,34 @@
                     <button v-if="answers.length>3" class="btn btn-success mx-1" @click="updateAnswers">Update</button>
                 </template>
             </QuestionModal>
+
+            <!-- FOR VIEWING AND EDITING QUESTION -->
+             <QuestionModal :show="showEditQuestionModal">
+
+                <template #header>
+                    <h5>Edit Question</h5>
+                </template>
+
+                <template #success>
+                    <div v-if="success" class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </template>
+
+                <template #body>
+                    <div class="mb-3">
+                        <label for="editQuestion" class="form-label">Question</label>
+                        <input v-model="questionForEdit.question" type="text" class="form-control" id="editQuestion" placeholder="Edit Question">
+                    </div>
+                </template>
+
+                <template #footer>
+                    <button class="btn btn-danger mx-1" @click="showEditQuestionModal=false">Close</button>
+                    <button class="btn btn-success mx-1" @click="updateQuestion">Update</button>
+                </template>
+
+             </QuestionModal>
         </Teleport>
     </Layout>
 </template>
