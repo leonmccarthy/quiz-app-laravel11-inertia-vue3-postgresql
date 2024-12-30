@@ -1,5 +1,17 @@
 <script setup>
     import Layout from "../Shared/Layout.vue";
+    import { computed, ref } from "vue";
+
+    const props = defineProps({
+        questions: Object
+    });
+    const currentIndex = ref(0);
+    const currentQuestion = computed(()=>{
+        return props.questions[currentIndex.value];
+    });
+    const answers = computed(()=>{
+        return props.questions[currentIndex.value].answers;
+    });
 </script>
 
 <template>
@@ -9,28 +21,15 @@
                 <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
-                    <h6 class="mb-0">List group item heading</h6>
-                    <p class="mb-0 opacity-75">Some placeholder content in a paragraph.</p>
+                    <h6 class="mb-0">{{ currentQuestion.question }}</h6>
                     </div>
-                    <small class="opacity-50 text-nowrap">now</small>
                 </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                <a  v-for="(answer, index) in answers" href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div>
-                    <h6 class="mb-0">Another title here</h6>
-                    <p class="mb-0 opacity-75">Some placeholder content in a paragraph that goes a little longer so it wraps to a new line.</p>
+                    <p class="mb-0 opacity-75">{{ answer.answers }}</p>
                     </div>
-                    <small class="opacity-50 text-nowrap">3d</small>
-                </div>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                    <div>
-                    <h6 class="mb-0">Third heading</h6>
-                    <p class="mb-0 opacity-75">Some placeholder content in a paragraph.</p>
-                    </div>
-                    <small class="opacity-50 text-nowrap">1w</small>
                 </div>
                 </a>
             </div>
