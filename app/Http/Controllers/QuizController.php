@@ -27,9 +27,24 @@ class QuizController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function results(Request $request)
     {
-        //
+        $score = $request[0]['results']['score'];
+        $totalQuestions = $request[0]['results']['totalQuestions'];
+
+        $percentage = ceil(($score/$totalQuestions)*100);
+        $comment = match(true){
+            $percentage>=80 && $percentage<=100 => "Congratulations!",
+            $percentage>=60 && $percentage<=79 => "Impressive!",
+            $percentage>=40 && $percentage<=59 => "Almost there!",
+            $percentage<=39 => "Sssss Ah!",
+            default=>"How'd you get here?"
+        };
+
+        return Inertia::render('Result', [
+            'percentage'=>$percentage,
+            'comment'=>$comment
+        ]);
     }
 
     /**

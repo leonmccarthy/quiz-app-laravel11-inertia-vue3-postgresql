@@ -1,6 +1,7 @@
 <script setup>
     import Layout from "../Shared/Layout.vue";
     import { computed, ref } from "vue";
+    import { router } from "@inertiajs/vue3";
 
     const props = defineProps({
         questions: Object
@@ -21,7 +22,6 @@
     const result = ref(null);
     const selectedOption = (index)=>{
         selectedAnswer.value = index;
-        alert(selectedAnswer.value);
     }
 
     const nextQuestion = ()=>{
@@ -34,6 +34,20 @@
             currentIndex.value++;
             selectedAnswer.value=null;            
         }
+    }
+
+    const calculateAnswer = ()=>{
+        if(props.questions[currentIndex.value].answers[selectedAnswer.value].correct_answer==true){
+                result.value++;
+        }
+        router.post('/results',[
+            {
+                results: {
+                    'score': result.value,
+                    'totalQuestions': totalQuestions.value
+                }
+            }
+        ])
     }
 
 </script>
@@ -59,7 +73,7 @@
                 </a>
                 <div class="d-flex justify-content-around p-2">
                     <button @click="nextQuestion" v-if="!lastQuestion" class="btn btn-primary mx-1">Next</button>
-                    <button v-if="lastQuestion" class="btn btn-success mx-1">Submit</button>
+                    <button @click="calculateAnswer" v-if="lastQuestion" class="btn btn-success mx-1">Submit</button>
                 </div>
             </div>
         </div>

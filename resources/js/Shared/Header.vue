@@ -16,6 +16,7 @@
         <li class="nav-item"><Link href="/" :class="{'nav-link active' :page.url==='/', 'nav-link':page.url!='/'}" aria-current="page">Home</Link></li>
         <li class="nav-item"><Link href="/quiz" :class="{'nav-link active' :page.url==='/quiz', 'nav-link':page.url!='/quiz'}">Quiz</Link></li>
         <li class="nav-item"><Link href="/questions" :class="{'nav-link active' :page.url==='/questions', 'nav-link':page.url!='/questions'}">Questions</Link></li>
+        <li class="nav-item"><Link href="/results" :class="{'nav-link active' :page.url==='/results', 'nav-link':page.url!='/results'}">Results</Link></li>
       </ul>
     </header>
 </template>
